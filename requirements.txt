@@ -10,3 +10,5 @@ sympy==1.0
 vcrpy
 ndg-httpsclient==0.4.2
 bumpversion
+docker-py==1.10.4
+toposort==1.4

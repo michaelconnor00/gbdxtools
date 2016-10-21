@@ -22,6 +22,10 @@ from gbdxtools.task_registry import TaskRegistry
 import gbdxtools.simpleworkflows
 
 
+class LocalWorkflowError(Exception):
+    pass
+
+
 class Interface(object):
     gbdx_connection = None
 
@@ -66,8 +70,25 @@ class Interface(object):
 
         self.task_registry = TaskRegistry(self)
 
+        # Flag for running the workflow locally
+        self.run_local = kwargs.get('run_local', False)
+
     def Task(self, __task_name, **kwargs):
+
+        # Check if the Interface is set for local runs
+        if self.run_local:
+            return gbdxtools.LocalTask(self, __task_name, **kwargs)
+
         return gbdxtools.simpleworkflows.Task(self, __task_name, **kwargs)
 
     def Workflow(self, tasks, **kwargs):
+
+        if self.run_local:
+            # Check if the tasks are local tasks
+            local_tasks = [task for task in tasks if isinstance(task, gbdxtools.LocalTask)]
+            if len(local_tasks) != len(tasks):
+                raise LocalWorkflowError('All Tasks must be of type gbdxtools.LocalTask')
+
+            return gbdxtools.LocalWorkflow(self, tasks, **kwargs)
+
         return gbdxtools.simpleworkflows.Workflow(self, tasks, **kwargs)

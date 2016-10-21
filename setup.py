@@ -29,7 +29,9 @@ setup(name='gbdxtools',
                         'ndg-httpsclient==0.4.2',
                         'sympy==1.0',
                         'six==1.10.0',
-                        'future==0.15.2'],
+                        'future==0.15.2',
+                        'docker-py==1.10.4',
+                        'toposort==1.4'],
       setup_requires=['pytest-runner'],
       tests_require=['pytest','vcrpy']
       )

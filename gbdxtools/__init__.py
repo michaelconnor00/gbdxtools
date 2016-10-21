@@ -1,2 +1,4 @@
 from __future__ import absolute_import
 from .interface import Interface
+from .local_task import LocalTask
+from .local_workflow import LocalWorkflow
