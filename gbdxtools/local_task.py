@@ -13,9 +13,15 @@ class InvalidPortError(Exception):
     pass
 
 
-class Path(object):
+class Directory(object):
     def __init__(self, path, task):
         self.path = path
+        self.parent = task
+
+
+class Strings(object):
+    def __init__(self, value, task):
+        self.str_value = value
         self.parent = task
 
 
@@ -26,9 +32,9 @@ class Port(object):
         self.description = description
         self.required = required
         if self.type == 'directory':
-            self._value = Path(value, task)
+            self._value = Directory(value, task)
         else:
-            self._value = value
+            self._value = Strings(value, task)
 
     @property
     def value(self):
@@ -36,15 +42,23 @@ class Port(object):
 
     @value.setter
     def value(self, new_value):
+        """
+        Update the value for Directory or Strings
+        :param new_value:
+        :return:
+        """
         if self.type == 'directory':
-            if isinstance(new_value, Path):
+            if isinstance(new_value, Directory):
                 self._value = new_value
             else:
                 # String value
                 self._value.path = new_value
-            # TODO raise exception if not str or Path
+            # TODO raise exception if not str or Directory
         else:
-            self._value = new_value
+            if isinstance(new_value, Strings):
+                self._value = new_value
+            else:
+                self._value.str_value = new_value
 
 
 class LocalPortList(object):
@@ -211,7 +225,7 @@ class LocalTask(Task):
                 else:
                     dest_path = os.path.join(os.getcwd(), 'inputs', port.name)
                     if not os.path.isdir(dest_path):
-                        raise InvalidPortError("Directory type input ports must be a valid directory")
+                        raise InvalidPortError("Directory type input ports must be a valid directory: %s" % dest_path)
 
                 cont_path = os.path.join(cont_input_path, port.name)
                 vol_mnts.append(cont_path)
@@ -219,8 +233,8 @@ class LocalTask(Task):
                     '%s:%s:rw' % (dest_path, cont_path)
                 )
             else:
-                if port.value is not None:
-                    string_input_ports['gbdx-input-port-' + port.name] = port.value
+                if port.value.str_value is not None:
+                    string_input_ports['gbdx-input-port-' + port.name] = json.dumps(port.value.str_value)
 
         for port_name in self.outputs.portnames:
 

@@ -97,7 +97,7 @@ class LocalWorkflow(object):
             deps = []
             for port_name in task.inputs.portnames:
                 port = task.inputs.__getattribute__(port_name)
-                if isinstance(port.value, local_task.Path):
+                if isinstance(port.value, local_task.Directory):
                     if port.value.parent not in task_list:
                         raise LocalWorkflowError('Task %s is missing from workflow' % port.value.parent.type)
                     deps.append(port.value.parent)
