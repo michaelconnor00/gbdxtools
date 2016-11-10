@@ -1,3 +1,24 @@
+0.7.2
+_____
+* Fix a bug in batchworkflow expansion
+
+0.7.1
+-----
+* Update batchworkflows in simpleworkflow to use new jinja templating
+
+0.7.0
+-----
+* Get image chip from catalog id and rectangle
+* Removed shapely from dependencies
+
+0.6.8
+-----
+* Updated leaflet javascript links in leafletmap_template which is used to create idaho slippy maps
+
+0.6.7
+-----
+* Add gbdx.vectors.query, gbdx.vectors.create, and gbdx.vectors.create_from_wkt
+
 0.6.6
 -----
 * simpleworkflows.savedata now uses persist flag
@@ -5,7 +26,7 @@
 
 0.6.5
 -----
-* Can now set impersonation_allowed flag 
+* Can now set impersonation_allowed flag
 
 0.6.4
 -----

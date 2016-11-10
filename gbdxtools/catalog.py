@@ -7,7 +7,10 @@ from __future__ import absolute_import
 from builtins import object
 
 import requests
+<<<<<<< HEAD
 from pygeoif import geometry
+=======
+>>>>>>> upstream-master
 import json
 import datetime
 from . import catalog_search_aoi

@@ -16,7 +16,11 @@ Instantiating an Interface object automatically logs you in:
    >>> gbdx = Interface()
 
 To get a GBDX username, password and API key, please email GBDX-Support@digitalglobe.com. 
+<<<<<<< HEAD
 For future reference, remember that your credentials are listed in https://gbdx.geobigdata.io/account/user/settings/.
+=======
+For future reference, remember that your credentials are listed in https://gbdx.geobigdata.io/profile.
+>>>>>>> upstream-master
 
 
 Getting your S3 information
