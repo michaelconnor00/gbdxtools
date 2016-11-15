@@ -24,8 +24,5 @@ For general information on the GBDX platform and API, see `here`_.
    user_guide
    running_workflows
    catalog_search
-<<<<<<< HEAD
-=======
    vector_service
->>>>>>> upstream-master
    api_docs
