@@ -30,13 +30,19 @@ class LocalWorkflow(object):
         """
         Sort tasks based on dependencies, then execute each.
         """
-        sorted_tasks = self._sort_tasks(self.tasks)
+        # sorted_tasks = self._sort_tasks(self.tasks)
+        sorted_tasks = self.tasks
 
         print('Output Root: %s' % self.temp_output_dir)
 
         try:
             for task in sorted_tasks:
-                task.execute(self.temp_output_dir)
+                try:
+                    task.execute(self.temp_output_dir)
+                except KeyboardInterrupt:
+                    task.stop()
+                    break
+
                 if not task.success:
                     print('Task failed: %s' % task.reason)
                     break
