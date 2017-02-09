@@ -25,6 +25,10 @@ from gbdxtools.cloudharness import CloudHarnessTask, CloudHarnessWorkflow
 from gbdx_task_template import TaskTemplate
 
 
+class LocalWorkflowError(Exception):
+    pass
+
+
 class Interface(object):
     gbdx_connection = None
 
@@ -71,6 +75,9 @@ class Interface(object):
 
         self.task_registry = TaskRegistry(self)
 
+        # Flag for running the workflow locally
+        self.run_local = kwargs.get('run_local', False)
+
     def Task(self, __task_name=None, cloudharness=None, **kwargs):
 
         # Check if __task_name has been passed as a CloudHarnessTask object,
@@ -86,6 +93,11 @@ class Interface(object):
                 __task_name if task_is_subclass else cloudharness,
                 **kwargs
             )
+
+        # Check if the Interface is set for local runs
+        elif self.run_local:
+            return gbdxtools.LocalTask(self, __task_name, **kwargs)
+
         else:
             # Create a standard gbdxtools task object.
             return gbdxtools.simpleworkflows.Task(self, __task_name, **kwargs)
@@ -94,5 +106,13 @@ class Interface(object):
         # Check if any of the tasks are CloudHarnessTasks
         if len([task for task in tasks if isinstance(task, CloudHarnessTask)]) > 0:
             return CloudHarnessWorkflow(self, tasks, **kwargs)
+
+        elif self.run_local:
+            # Check if the tasks are local tasks
+            local_tasks = [task for task in tasks if isinstance(task, gbdxtools.LocalTask)]
+            if len(local_tasks) != len(tasks):
+                raise LocalWorkflowError('All Tasks must be of type gbdxtools.LocalTask')
+
+            return gbdxtools.LocalWorkflow(self, tasks, **kwargs)
 
         return gbdxtools.simpleworkflows.Workflow(self, tasks, **kwargs)

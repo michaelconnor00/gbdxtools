@@ -1,0 +1,4 @@
+{
+    "status": "success", 
+    "reason": "['{\"outputParameters\":{\"OUTPUT_RASTER\":{\"url\":\"/mnt/work/output/output_raster_uri/data\",\"factory\":\"URLRaster\",\"auxiliary_url\":[\"/mnt/work/output/output_raster_uri/data.hdr\"]}}}\\n']"
+}
