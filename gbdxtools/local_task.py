@@ -142,6 +142,7 @@ class LocalTask(Task):
 
         # Status
         self.status = None  # True means done, False means pending
+        self.stop = None  # For stop function
 
     def __eq__(self, other):
         return self.name == other.name
@@ -210,7 +211,9 @@ class LocalTask(Task):
             if port.type == 'directory':
 
                 if port.value.path is None:
-                    raise InvalidPortError('Directory Input ports must have a value')
+                    print(
+                        '\nWARNING: Directory Input ports must have a value: %s -> %s' % (port.name, port.value.path))
+                    continue
 
                 port_path = port.value.path
 
@@ -271,6 +274,21 @@ class LocalTask(Task):
             print('Container Args: %s\n' % cont_args)
 
         container_id = dkr.create_container(**cont_args)
+
+        def stop_func():
+            """Stop the running container"""
+            dkr.stop(container_id.get('Id'))
+            dkr.wait(container_id.get('Id'))
+
+            print('\t--Start Output--:\n')
+            print(dkr.logs(
+                container=container_id.get('Id'),
+                stdout=True,
+                stderr=True
+            ).decode("utf-8"))
+            print('\t--End Output--\n')
+
+        self.stop = stop_func
 
         if self.verbose:
             print('Container ID: %s\n' % container_id)
