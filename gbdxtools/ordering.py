@@ -5,7 +5,7 @@ Contact: kostas.stamatiou@digitalglobe.com
 """
 from builtins import zip
 from builtins import object
-
+import requests
 import json
 
 
@@ -21,6 +21,7 @@ class Ordering(object):
            Returns:
                An instance of the Ordering interface.
         '''
+        self.base_url = '%s/orders/v2' % interface.root_url
         self.gbdx_connection = interface.gbdx_connection
         self.logger = interface.logger
     
@@ -49,7 +50,7 @@ class Ordering(object):
                 results_list.append(order_id)
 
         self.logger.debug('Place order')
-        url = 'https://geobigdata.io/orders/v2/order/'
+        url = '%s/order' % self.base_url
 
         batch_size = min(100, batch_size)
         
@@ -88,10 +89,30 @@ class Ordering(object):
         '''
 
         self.logger.debug('Get status of order ' + order_id)
-        url = 'https://geobigdata.io/orders/v2/order/'
-        r = self.gbdx_connection.get(url + order_id)
+        url = '%(base_url)s/order/%(order_id)s' % {
+            'base_url': self.base_url, 'order_id': order_id
+        }
+        r = self.gbdx_connection.get(url)
         r.raise_for_status()
         return r.json().get("acquisitions", {})
+
+    def heartbeat(self):
+        '''
+        Check the heartbeat of the ordering API
+
+        Args: None
+
+        Returns:  True or False
+        '''
+        url = '%s/heartbeat' % self.base_url
+        # Auth is not required to hit the heartbeat
+        r = requests.get(url) 
+
+        try:
+            return r.json() == "ok"
+        except:
+            return False
+
 
     def location(self, image_catalog_ids, batch_size=100):
         def _process_single_batch(url_, ids, results_dict):
@@ -100,7 +121,7 @@ class Ordering(object):
             r.raise_for_status()
             results_dict['acquisitions'].extend(r.json()['acquisitions'])
 
-        url = 'https://geobigdata.io/orders/v2/location'
+        url = '%s/location' % self.base_url
 
         batch_size = min(100, batch_size)
 

@@ -1,5 +1,34 @@
+0.9.4
+-----
+* add "host" parameter to interface kwargs for dev purposes
+
+0.9.3
+-----
+* add workflow callback support:  wf = workflow([task], callback='callback_url')
+
+0.9.2
+-----
+* shorten task name UUIDs to 8 characters for readability
+
+0.9.1
+-----
+* add gbdx.ordering.heartbeat() function
+
+0.9.0
+-----
+* add workflow.stdout, workflow.stderr, workflow.task_ids
+* add gbdx.workflow.get_stdout(), gbdx.workflow.get_stderr(), gbdx.workflow.get()
+
+0.8.1
+-----
+* upgrade requests version
+
+0.8.0
+-----
+* Added get_tms_layers function to idaho module
+
 0.7.2
-_____
+-----
 * Fix a bug in batchworkflow expansion
 
 0.7.1
